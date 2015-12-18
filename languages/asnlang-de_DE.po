@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Add sponsored notice\n"
-"POT-Creation-Date: 2015-12-17 14:32+0100\n"
-"PO-Revision-Date: 2015-12-17 14:32+0100\n"
+"POT-Creation-Date: 2015-12-18 15:52+0100\n"
+"PO-Revision-Date: 2015-12-18 15:52+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: de_DE\n"
@@ -20,14 +20,29 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPathExcluded-0: *.js\n"
 
-#: add-sponsored-notice.php:39 add-sponsored-notice.php:94
-#: add-sponsored-notice.php:107
+#: add-sponsored-notice.php:70
 msgid "Sponsored"
 msgstr "Gesponsert"
 
-#: add-sponsored-notice.php:42 add-sponsored-notice.php:110
+#: add-sponsored-notice.php:73
 msgid "This Post is a sponsored post"
 msgstr "Dieser Beitrag ist ein gesponserter Post"
+
+#: asn-frontend.php:7 asn-frontend.php:16
+msgid "Add Sponsored Notice"
+msgstr "Sponsored Hinweis hinzufügen"
+
+#: asn-frontend.php:7
+msgid "Sponsored Notice"
+msgstr "Sponsored Hinweis"
+
+#: asn-frontend.php:13
+msgid "You do not have sufficient permissions to access this page."
+msgstr ""
+
+#: asn-frontend.php:16
+msgid "options"
+msgstr "Optionen"
 
 #. Plugin Name of the plugin/theme
 msgid "Add sponsored notice"

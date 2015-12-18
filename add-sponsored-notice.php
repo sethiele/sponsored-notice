@@ -12,11 +12,35 @@
  * Domain Path: /languages
  */
 
-
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
-define( 'TDOMAIN', 'asnlang' );
-define( 'OPTION_NAME', 'asn' );
 
+if ( ! defined( 'ASN_FILE' ) ) {
+ define( 'ASN_FILE', __FILE__ );
+}
+
+if ( ! defined( 'ASN_PATH' ) ) {
+ define( 'ASN_PATH', plugin_dir_path( ASN_FILE ) );
+}
+
+if ( ! defined( 'ASN_BASENAME' ) ) {
+ define( 'ASN_BASENAME', plugin_basename( ASN_FILE ) );
+}
+
+if ( ! defined( 'ASN_T_DOMAIN' ) ) {
+  define( 'ASN_T_DOMAIN', 'asnlang' );
+}
+
+if ( ! defined( 'ASN_OPTION_NAME' ) ) {
+  define( 'ASN_OPTION_NAME', 'asn' );
+}
+
+$required_files = array(
+  'frontend' => ASN_PATH . 'asn-frontend.php'
+);
+
+foreach ($required_files as $key => $value) {
+  require_once($value);
+}
 
 /**
  * Load Textdomain
@@ -24,7 +48,7 @@ define( 'OPTION_NAME', 'asn' );
  * @since 1.0.0
  */
 function asn_load_textdomain() {
-  load_plugin_textdomain( 'asnlang', FALSE, basename( dirname( __FILE__ ) ) . '/languages/' );
+  load_plugin_textdomain( 'asnlang', FALSE, dirname( ASN_BASENAME ) . '/languages/' );
 }
 add_action( 'init', 'asn_load_textdomain' );
 
@@ -39,19 +63,25 @@ add_action( 'init', 'asn_load_textdomain' );
  */
 function asn_activate(){
   asn_load_textdomain();
-  if (get_option(OPTION_NAME) == NULL) {
-
-    add_option(OPTION_NAME, array(
-      'short_text' => array(
-        "[".__( 'Sponsored', TDOMAIN)."]"
+  if (get_option(ASN_OPTION_NAME) == NULL) {
+    $inital_values = array(
+      'short' => array(
+        'auto_show' => true,
+        'append' => false,
+        'versions' => array(
+          "[".__( 'Sponsored', ASN_T_DOMAIN)."]"
+        )
       ),
       'description' => array(
-        __ ('This Post is a sponsored post', TDOMAIN)
-      ),
-      'in_title' => true,
-      'append' => true
-    ));
+        'auto_show' => true,
+        'append' => false,
+        'versions' => array(
+          __ ('This Post is a sponsored post', ASN_T_DOMAIN)
+        )
+      )
+    );
 
+    add_option(ASN_OPTION_NAME, $inital_values);
   }
 
   // Register uninstall
@@ -69,7 +99,7 @@ register_activation_hook( __FILE__, 'asn_activate' );
  * @since 1.0.0
  */
 function asn_deinstall(){
-  delete_option(OPTION_NAME);
+  delete_option(ASN_OPTION_NAME);
 }
 
 
@@ -102,8 +132,8 @@ function get_asp_notice($text, $options = array('before' => NULL, 'after' => NUL
  * @return string           Value
  */
 function get_notice_text($position){
-  $values = get_option(OPTION_NAME);
-  return $values['short_text'][$position];
+  $values = get_option(ASN_OPTION_NAME);
+  return $values['short']['versions'][$position];
 }
 
 
@@ -116,12 +146,14 @@ function get_notice_text($position){
  * @since 1.0.0
  */
 function asn_the_title( $title, $id = null ) {
-  $options = get_option(OPTION_NAME);
-  if ($options['in_title']) {
-    $new_title = ($options['append'] ? $title." ".get_notice_text(0) : get_notice_text(0)." ".$title );
+  $options = get_option(ASN_OPTION_NAME);
+  $notice = '<span class="asn-title-notice">' . get_notice_text(0) . "</span>";
+  if (isset($options['short']['auto_show'])) {
+    $new_title = ($options['short']['append']) ? $title . " " . $notice : $notice . " " . $title;
     return $new_title;
   }
   return $title;
 }
 add_filter( 'the_title', 'asn_the_title', 10, 2 );
+
 ?>
