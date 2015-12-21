@@ -22,20 +22,9 @@ if ( ! defined( 'ASN_PATH' ) ) {
  define( 'ASN_PATH', plugin_dir_path( ASN_FILE ) );
 }
 
-if ( ! defined( 'ASN_BASENAME' ) ) {
- define( 'ASN_BASENAME', plugin_basename( ASN_FILE ) );
-}
-
-if ( ! defined( 'ASN_T_DOMAIN' ) ) {
-  define( 'ASN_T_DOMAIN', 'asnlang' );
-}
-
-if ( ! defined( 'ASN_OPTION_NAME' ) ) {
-  define( 'ASN_OPTION_NAME', 'asn' );
-}
-
 $required_files = array(
-  'frontend' => ASN_PATH . 'asn-frontend.php'
+  'varaibles' => ASN_PATH . 'asn-variables.php',
+  'frontend'  => ASN_PATH . 'asn-frontend.php'
 );
 
 foreach ($required_files as $key => $value) {
@@ -65,14 +54,14 @@ function asn_activate(){
   asn_load_textdomain();
   if (get_option(ASN_OPTION_NAME) == NULL) {
     $inital_values = array(
-      'short' => array(
+      ASN_POSITION_TITLE => array(
         'auto_show' => true,
         'append' => false,
         'versions' => array(
           "[".__( 'Sponsored', ASN_T_DOMAIN)."]"
         )
       ),
-      'description' => array(
+      ASN_POSITION_CONTENT => array(
         'auto_show' => true,
         'append' => false,
         'versions' => array(
@@ -129,11 +118,53 @@ function get_asp_notice($text, $options = array('before' => NULL, 'after' => NUL
 /**
  * Get notice short text
  * @param  int    $position Position in settings
- * @return string           Value
+ * @return string           short text at position
+ *
+ * @since 1.0.0
  */
 function get_notice_text($position){
   $values = get_option(ASN_OPTION_NAME);
-  return $values['short']['versions'][$position];
+  return $values[ASN_POSITION_TITLE]['versions'][$position];
+}
+
+/**
+ * Get notice description text
+ * @param  int    $position Position in Settings
+ * @return stirng           description at position
+ *
+ * @since 1.0.0
+ */
+function get_notice_description($position){
+  $values = get_option(ASN_OPTION_NAME);
+  return $values[ASN_POSITION_CONTENT]['versions'][$position];
+}
+
+/**
+ * Auto display in position
+ * @param  string $position Position where to display. Accepts ASN_POSITION_TITLE, ASN_POSITION_CONTENT
+ * @return boolean           is visible at position
+ *
+ * @since 1.0.0
+ */
+function visible_in($position){
+  if($position != ASN_POSITION_CONTENT && $position != ASN_POSITION_TITLE){
+    trigger_error(__('Error: Unknown $position', ASN_T_DOMAIN), E_USER_ERROR);
+  }
+  return isset(get_option(ASN_OPTION_NAME)[$position]['auto_show']);
+}
+
+/**
+ * Append or prepand
+ * @param  string $position Position where to display. Accepts ASN_POSITION_TITLE, ASN_POSITION_CONTENT
+ * @return boolean           append (true) prepand (false)
+ *
+ * @since 1.0.0
+ */
+function append_or_prepend($position){
+  if($position != ASN_POSITION_CONTENT && $position != ASN_POSITION_TITLE){
+    trigger_error(__('Error: Unknown $position', ASN_T_DOMAIN), E_USER_ERROR);
+  }
+  return isset(get_option(ASN_OPTION_NAME)[$position]['append']);
 }
 
 
@@ -146,14 +177,31 @@ function get_notice_text($position){
  * @since 1.0.0
  */
 function asn_the_title( $title, $id = null ) {
-  $options = get_option(ASN_OPTION_NAME);
   $notice = '<span class="asn-title-notice">' . get_notice_text(0) . "</span>";
-  if (isset($options['short']['auto_show'])) {
-    $new_title = ($options['short']['append']) ? $title . " " . $notice : $notice . " " . $title;
+  if (visible_in(ASN_POSITION_TITLE)) {
+    $new_title = (append_or_prepend(ASN_POSITION_TITLE)) ? $title . " " . $notice : $notice . " " . $title;
     return $new_title;
   }
   return $title;
 }
 add_filter( 'the_title', 'asn_the_title', 10, 2 );
+
+
+/**
+ * Add Description to content
+ * @param  string $content actual content
+ * @return string          new string
+ *
+ * @since 1.0.0
+ */
+function asn_the_content($content){
+  $description = '<p class="asn-description-notice">' . get_notice_description(0) . "</p>";
+  if (visible_in(ASN_POSITION_CONTENT)) {
+    $new_content = (append_or_prepend(ASN_POSITION_CONTENT)) ? $content . " " . $description : $description . " " . $content;
+    return $new_content;
+  }
+  return $content;
+}
+add_filter( 'the_content', 'asn_the_content' );
 
 ?>
