@@ -47,10 +47,6 @@ function asn_meta_box_callback( $post ){
     </label>
   </p>
   <?php
-  // echo '<label for="myplugin_new_field">';
-  // _e( 'Description for this field', 'myplugin_textdomain' );
-  // echo '</label> ';
-  // echo '<input type="text" id="myplugin_new_field" name="myplugin_new_field" value="' . esc_attr( $value ) . '" size="25" />';
 }
 
 

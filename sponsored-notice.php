@@ -1,7 +1,7 @@
 <?php
 /*
- * Plugin Name: Add sponsored notice
- * Plugin URI:  https://github.com/sethiele/add-sponsored-notice
+ * Plugin Name: Sponsored notice
+ * Plugin URI:  https://github.com/sethiele/sponsored-notice
  * Description: Add a "Sponsored" notice to your posts.
  * Version:     1.0.0
  * Author:      Sebastian Thiele
@@ -92,6 +92,15 @@ function asn_deinstall(){
   delete_option(ASN_OPTION_NAME);
 }
 
+/**
+ * Check if post is sponsored
+ * @param  post  $post current post
+ * @return boolean       Is Sponsored post (true) or not (false)
+ */
+function asn_is_sponsored($post){
+  return get_post_meta( $post->ID, ASN_POST_OPTION_ACTIVE, true );
+}
+
 
 /**
 * Return Notice Text
@@ -109,10 +118,13 @@ function asn_deinstall(){
 */
 function get_asp_notice($text, $options = array('before' => NULL, 'after' => NULL))
 {
-  $before = $options['before'] ?: "<p>";
-  $after = $options['after'] ?: "</p>";
-  $note = get_notice_text($text-1);
-  return $before.$note.$after;
+  global $post;
+  if (asn_is_sponsored($post)) {
+    $before = $options['before'] ?: "<p>";
+    $after = $options['after'] ?: "</p>";
+    $note = get_notice_text(get_post_meta( $post->ID, ASN_POST_OPTION_TYPE, true ));
+    return $before.$note.$after;
+  }
 }
 
 
@@ -178,8 +190,10 @@ function append_or_prepend($position){
  * @since 1.0.0
  */
 function asn_the_title( $title, $id = null ) {
-  $notice = '<span class="asn-title-notice">' . get_notice_text(0) . "</span>";
-  if (visible_in(ASN_POSITION_TITLE)) {
+  global $pagenow;
+  global $post;
+  $notice = '<span class="asn-title-notice">' . get_notice_text(get_post_meta( $post->ID, ASN_POST_OPTION_TYPE, true )) . "</span>";
+  if (visible_in(ASN_POSITION_TITLE) && asn_is_sponsored($post) && 'edit.php' != $pagenow) {
     $new_title = (append_or_prepend(ASN_POSITION_TITLE)) ? $title . " " . $notice : $notice . " " . $title;
     return $new_title;
   }
@@ -196,8 +210,9 @@ add_filter( 'the_title', 'asn_the_title', 10, 2 );
  * @since 1.0.0
  */
 function asn_the_content($content){
-  $description = '<p class="asn-description-notice">' . get_notice_description(0) . "</p>";
-  if (visible_in(ASN_POSITION_CONTENT)) {
+  global $post;
+  $description = '<p class="asn-description-notice">' . get_notice_description(get_post_meta( $post->ID, ASN_POST_OPTION_TYPE, true )) . "</p>";
+  if (visible_in(ASN_POSITION_CONTENT) && asn_is_sponsored($post)) {
     $new_content = (append_or_prepend(ASN_POSITION_CONTENT)) ? $content . " " . $description : $description . " " . $content;
     return $new_content;
   }
