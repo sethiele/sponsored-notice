@@ -24,7 +24,8 @@ if ( ! defined( 'ASN_PATH' ) ) {
 
 $required_files = array(
   'varaibles' => ASN_PATH . 'asn-variables.php',
-  'frontend'  => ASN_PATH . 'asn-frontend.php'
+  'frontend'  => ASN_PATH . 'asn-frontend.php',
+  'metabox'   => ASN_PATH . 'asn-meta-box.php',
 );
 
 foreach ($required_files as $key => $value) {

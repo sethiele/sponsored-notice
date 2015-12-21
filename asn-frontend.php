@@ -24,7 +24,7 @@ function asn_setting_page() {
 
 
   echo '<div class="wrap">';
-  echo '<h1>"' . __('Add Sponsored Notice', ASN_T_DOMAIN) . '" ' . __( 'options', ASN_T_DOMAIN ) . "</h1>";
+  echo '<h1>"' . __('Sponsored Notice', ASN_T_DOMAIN) . '" ' . __( 'options', ASN_T_DOMAIN ) . "</h1>";
   ?>
   <form name="form1" method="post" action="options.php">
     <?php settings_fields( 'asn-setting-group' ); ?>
