@@ -122,7 +122,7 @@ function get_asp_notice($text, $options = array('before' => NULL, 'after' => NUL
  *
  * @since 1.0.0
  */
-function get_notice_text($position){
+function get_notice_text($position = 0){
   $values = get_option(ASN_OPTION_NAME);
   return $values[ASN_POSITION_TITLE]['versions'][$position];
 }
@@ -134,7 +134,7 @@ function get_notice_text($position){
  *
  * @since 1.0.0
  */
-function get_notice_description($position){
+function get_notice_description($position = 0){
   $values = get_option(ASN_OPTION_NAME);
   return $values[ASN_POSITION_CONTENT]['versions'][$position];
 }
@@ -164,7 +164,7 @@ function append_or_prepend($position){
   if($position != ASN_POSITION_CONTENT && $position != ASN_POSITION_TITLE){
     trigger_error(__('Error: Unknown $position', ASN_T_DOMAIN), E_USER_ERROR);
   }
-  return isset(get_option(ASN_OPTION_NAME)[$position]['append']);
+  return get_option(ASN_OPTION_NAME)[$position]['append'];
 }
 
 
