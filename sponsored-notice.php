@@ -3,7 +3,7 @@
  * Plugin Name: Sponsored notice
  * Plugin URI:  https://github.com/sethiele/sponsored-notice
  * Description: Add a "Sponsored" notice to your posts.
- * Version:     1.0.0
+ * Version:     0.9.0.rc1
  * Author:      Sebastian Thiele
  * Author URI:  http://sebastian-thiele.net
  * License:     GPL2
@@ -105,28 +105,24 @@ function asn_is_sponsored($post){
 /**
 * Return Notice Text
 *
-* @since 1.0.0
-*
-* @param int      $text The Number of preset text
-* @param array    $options {
-*     Optional. An array of arguments.
-*
-*     @type string $before HTML or Text before notice. Default '<p>'
-*     @type string $after HTML or Text after notice. Default '</p>'
-* }
+* @param string   $before Text or HTML Tags placed befor the notice. Default: '<p>'
+* @param string   $after  Text or HTML Tags placed after the notice. Default: '</p>'
+
 * @return string  notice
+*
+* * @since 1.0.0
 */
-function get_asp_notice($text, $options = array('before' => NULL, 'after' => NULL))
+function asp_get_notice($before = NULL, $after = NULL)
 {
   global $post;
   if (asn_is_sponsored($post)) {
-    $before = $options['before'] ?: "<p>";
-    $after = $options['after'] ?: "</p>";
-    $note = get_notice_text(get_post_meta( $post->ID, ASN_POST_OPTION_TYPE, true ));
+    $before = $before ?: "<p>";
+    $after = $after ?: "</p>";
+    $version = get_post_meta( $post->ID, ASN_POST_OPTION_TYPE, true );
+    $note = get_notice_text($version);
     return $before.$note.$after;
   }
 }
-
 
 /**
  * Get notice short text
